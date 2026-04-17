@@ -4,6 +4,7 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { Plane, Crosshair, Gem } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { ContainerScroll } from '../components/ContainerScroll';
 import { avions, getAvionBySlug } from '../data/avions';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -17,7 +18,6 @@ const fadeUp = {
   }),
 };
 
-// Counter that counts from 0 → target when in view.
 function Counter({ target, duration = 2000 }: { target: number; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
@@ -26,47 +26,29 @@ function Counter({ target, duration = 2000 }: { target: number; duration?: numbe
 
   useEffect(() => {
     if (!inView) return;
-    if (reduce) {
-      setValue(target);
-      return;
-    }
+    if (reduce) { setValue(target); return; }
     const start = performance.now();
     let raf = 0;
     const tick = (now: number) => {
-      const elapsed = now - start;
-      const t = Math.min(1, elapsed / duration);
-      // easeOutCubic
-      const eased = 1 - Math.pow(1 - t, 3);
-      setValue(Math.round(target * eased));
+      const t = Math.min(1, (now - start) / duration);
+      setValue(Math.round(target * (1 - Math.pow(1 - t, 3))));
       if (t < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [inView, target, duration, reduce]);
 
-  const formatted = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u2009');
-  return <span ref={ref}>{formatted}</span>;
+  return <span ref={ref}>{value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u2009')}</span>;
 }
 
-// Animated SVG horizontal line drawn on scroll.
 function ScrollDrawLine() {
   const ref = useRef<SVGSVGElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.5 });
   return (
-    <svg
-      ref={ref}
-      viewBox="0 0 1000 1"
-      preserveAspectRatio="none"
-      className="w-full h-px block"
-      aria-hidden="true"
-    >
+    <svg ref={ref} viewBox="0 0 1000 1" preserveAspectRatio="none" className="w-full h-px block" aria-hidden="true">
       <motion.line
-        x1="0"
-        y1="0.5"
-        x2="1000"
-        y2="0.5"
-        stroke="rgba(0,163,224,0.3)"
-        strokeWidth="1"
+        x1="0" y1="0.5" x2="1000" y2="0.5"
+        stroke="rgba(0,163,224,0.3)" strokeWidth="1"
         initial={{ pathLength: 0 }}
         animate={inView ? { pathLength: 1 } : { pathLength: 0 }}
         transition={{ duration: 1.4, ease: EASE }}
@@ -85,27 +67,9 @@ export default function Home() {
     .filter(Boolean) as typeof avions;
 
   const categories = [
-    {
-      num: '01',
-      title: 'Commercial',
-      icon: Plane,
-      desc: "Transport massique, long-courrier, moyen-courrier.",
-      offset: false,
-    },
-    {
-      num: '02',
-      title: 'Militaire',
-      icon: Crosshair,
-      desc: "Chasseurs, bombardiers, supériorité aérienne.",
-      offset: true,
-    },
-    {
-      num: '03',
-      title: 'Business',
-      icon: Gem,
-      desc: "Jets privés, aviation d'affaires, ultra-long range.",
-      offset: false,
-    },
+    { num: '01', title: 'Commercial', icon: Plane, desc: "Transport massique, long-courrier, moyen-courrier.", offset: false },
+    { num: '02', title: 'Militaire', icon: Crosshair, desc: "Chasseurs, bombardiers, supériorité aérienne.", offset: true },
+    { num: '03', title: 'Business', icon: Gem, desc: "Jets privés, aviation d'affaires, ultra-long range.", offset: false },
   ] as const;
 
   return (
@@ -120,20 +84,14 @@ export default function Home() {
           className="absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
         />
-        {/* Overlay layer 1 */}
         <div className="absolute inset-0 bg-phi-slate/55" aria-hidden="true" />
-        {/* Overlay layer 2 — radial vignette */}
         <div
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.5)_100%)]"
           aria-hidden="true"
         />
-        {/* Halo */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(circle at 30% 60%, rgba(0,163,224,0.12) 0%, transparent 60%)',
-          }}
+          style={{ background: 'radial-gradient(circle at 30% 60%, rgba(0,163,224,0.12) 0%, transparent 60%)' }}
           aria-hidden="true"
         />
 
@@ -141,52 +99,27 @@ export default function Home() {
         <div className="absolute left-[8vw] bottom-[35%] z-10">
           <motion.h1
             className="font-display text-phi-white"
-            style={{
-              fontSize: 'clamp(5rem, 12vw, 10rem)',
-              lineHeight: 0.9,
-              letterSpacing: '-0.02em',
-            }}
+            style={{ fontSize: 'clamp(5rem, 12vw, 10rem)', lineHeight: 0.9, letterSpacing: '-0.02em' }}
           >
-            <motion.span
-              className="block"
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              custom={0}
-            >
+            <motion.span className="block" variants={fadeUp} initial="hidden" animate="show" custom={0}>
               Explorez le Ciel.
             </motion.span>
-            <motion.span
-              className="block"
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              custom={0.12}
-            >
+            <motion.span className="block" variants={fadeUp} initial="hidden" animate="show" custom={0.12}>
               Φ Aéronautique.
             </motion.span>
           </motion.h1>
         </div>
 
-        {/* Subtitle */}
         <motion.p
           className="absolute left-[10vw] bottom-[30%] max-w-md font-body text-phi-grey z-10"
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={0.28}
+          variants={fadeUp} initial="hidden" animate="show" custom={0.28}
         >
-          Plongez dans les appareils qui redessinent le ciel contemporain — ingénierie,
-          silhouette, performance.
+          Plongez dans les appareils qui redessinent le ciel contemporain — ingénierie, silhouette, performance.
         </motion.p>
 
-        {/* CTA group */}
         <motion.div
           className="absolute left-[8vw] bottom-[22%] flex flex-col items-start gap-4 z-10"
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={0.42}
+          variants={fadeUp} initial="hidden" animate="show" custom={0.42}
         >
           <Link
             to="/hangar"
@@ -195,34 +128,22 @@ export default function Home() {
           >
             Découvrir les appareils
           </Link>
-          <a
-            href="#featured"
-            className="font-mono text-phi-grey text-xs uppercase tracking-widest hover:underline"
-          >
+          <a href="#fleet" className="font-mono text-phi-grey text-xs uppercase tracking-widest hover:underline">
             En savoir plus ↓
           </a>
         </motion.div>
 
-        {/* Tags top-right */}
         <motion.div
           className="absolute right-[4vw] top-[30%] z-10 flex items-start gap-4"
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={0.55}
+          variants={fadeUp} initial="hidden" animate="show" custom={0.55}
         >
           <div className="w-px h-20 bg-phi-sky" aria-hidden="true" />
           <div className="flex flex-col gap-3">
-            <span className="font-mono text-xs uppercase tracking-widest text-phi-white/80">
-              A350 XWB · Airbus
-            </span>
-            <span className="font-mono text-xs uppercase tracking-widest text-phi-white/80">
-              Mach 0.85 · Croisière
-            </span>
+            <span className="font-mono text-xs uppercase tracking-widest text-phi-white/80">A350 XWB · Airbus</span>
+            <span className="font-mono text-xs uppercase tracking-widest text-phi-white/80">Mach 0.85 · Croisière</span>
           </div>
         </motion.div>
 
-        {/* Watermark "01" */}
         <div
           className="absolute bottom-[3%] right-[3%] font-mono text-phi-white/[0.04] pointer-events-none select-none z-0"
           style={{ fontSize: 'clamp(6rem, 10vw, 10rem)', lineHeight: 1 }}
@@ -231,17 +152,12 @@ export default function Home() {
           01
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10">
           <motion.div
             className="w-px bg-phi-white/60 origin-top"
             style={{ height: '60px' }}
             animate={reduce ? { scaleY: 1 } : { scaleY: [0, 1, 0] }}
-            transition={
-              reduce
-                ? { duration: 0 }
-                : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }
-            }
+            transition={reduce ? { duration: 0 } : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
             aria-hidden="true"
           />
           <span
@@ -253,14 +169,94 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ SECTION 2 — FEATURED A380 ============ */}
+      {/* ============ SECTION 2 — CONTAINER SCROLL — LA FLOTTE ============ */}
+      <section id="fleet" className="bg-phi-slate overflow-hidden">
+        <ContainerScroll
+          titleComponent={
+            <div>
+              <span className="font-mono text-xs uppercase tracking-[0.28em] text-phi-sky">
+                02 · LA FLOTTE
+              </span>
+              <h2
+                className="font-display text-phi-white mt-3"
+                style={{ fontSize: 'clamp(3.5rem, 8vw, 7rem)', lineHeight: 0.92, letterSpacing: '-0.02em' }}
+              >
+                Dix appareils.
+                <br />
+                Une seule{' '}
+                <span className="font-serif italic text-phi-sky not-italic">obsession.</span>
+              </h2>
+              <p className="font-body text-phi-grey mt-5 max-w-lg text-sm leading-relaxed">
+                De l'A380 au F-22 Raptor — chaque appareil cristallise une décision d'ingénierie, un pari industriel, une époque.
+              </p>
+            </div>
+          }
+        >
+          {/* "Product screenshot" card */}
+          <div className="relative overflow-hidden border border-phi-sky/15 bg-phi-navy" style={{ borderRadius: 0 }}>
+            {/* Browser chrome bar */}
+            <div className="flex items-center gap-2 px-5 py-3 bg-phi-slate/90 border-b border-phi-sky/10">
+              <div className="w-3 h-3 rounded-full bg-phi-orange/60" aria-hidden="true" />
+              <div className="w-3 h-3 rounded-full bg-phi-grey/30" aria-hidden="true" />
+              <div className="w-3 h-3 rounded-full bg-phi-grey/15" aria-hidden="true" />
+              <div className="ml-4 flex-1 bg-phi-navy/60 border border-phi-sky/10 px-3 py-1 max-w-xs">
+                <span className="font-mono text-[10px] text-phi-grey/70 uppercase tracking-widest">
+                  phi-aeronautique · /hangar
+                </span>
+              </div>
+              <span className="font-mono text-[10px] text-phi-grey/30 uppercase tracking-widest ml-4 hidden md:block">
+                Φ
+              </span>
+            </div>
+
+            {/* 5-column aircraft grid */}
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-px bg-phi-sky/8">
+              {avions.map((a, i) => (
+                <Link
+                  key={a.slug}
+                  to={`/avion/${a.slug}`}
+                  className="relative overflow-hidden group bg-phi-slate"
+                  style={{ aspectRatio: '16 / 9' }}
+                >
+                  <img
+                    src={a.image}
+                    alt={a.nom}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-phi-slate/80 via-phi-slate/10 to-transparent" />
+                  <div className="absolute inset-0 bg-phi-sky/0 group-hover:bg-phi-sky/10 transition-colors duration-300" />
+                  <div className="absolute bottom-2 left-2 right-2">
+                    <p className="font-mono text-[8px] uppercase tracking-widest text-phi-white/80 truncate leading-none">
+                      {a.nom}
+                    </p>
+                  </div>
+                  <span className="absolute top-2 left-2 font-mono text-[8px] text-phi-sky/60 leading-none">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                </Link>
+              ))}
+            </div>
+
+            {/* Bottom status bar */}
+            <div className="flex items-center justify-between px-5 py-2.5 bg-phi-slate/80 border-t border-phi-sky/10">
+              <span className="font-mono text-[9px] text-phi-grey/50 uppercase tracking-widest">
+                10 appareils · 2025
+              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-phi-sky animate-pulse" aria-hidden="true" />
+                <span className="font-mono text-[9px] text-phi-sky/60 uppercase tracking-widest">
+                  EN SERVICE
+                </span>
+              </div>
+            </div>
+          </div>
+        </ContainerScroll>
+      </section>
+
+      {/* ============ SECTION 3 — FEATURED A380 ============ */}
       <section id="featured" className="relative bg-phi-slate py-32 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-12 px-[6vw]">
-          {/* Left — silhouette SVG */}
-          <div
-            className="md:col-span-3 flex items-center justify-center"
-            style={{ perspective: '1200px' }}
-          >
+          <div className="md:col-span-3 flex items-center justify-center" style={{ perspective: '1200px' }}>
             <motion.div
               className="w-full"
               initial={{ opacity: 0, x: 100, rotateY: -5 }}
@@ -278,31 +274,21 @@ export default function Home() {
                 className="w-full h-auto"
                 aria-hidden="true"
               >
-                {/* Fuselage — double deck wide body */}
                 <path d="M 40 158 Q 20 148 40 140 L 90 130 Q 130 120 200 118 L 470 118 Q 520 118 555 138 Q 575 148 555 162 Q 520 180 470 180 L 200 180 Q 130 178 90 168 Z" />
-                {/* Upper deck */}
                 <path d="M 110 118 Q 120 92 180 90 L 350 90 Q 380 90 395 118" />
-                {/* Cockpit windows */}
                 <path d="M 545 142 L 558 148 L 545 156" />
-                {/* Main wing */}
                 <path d="M 230 158 L 140 238 L 200 242 L 320 170 Z" />
-                {/* Far wing hint */}
                 <path d="M 310 150 L 380 100 L 420 104 L 340 152 Z" opacity="0.35" />
-                {/* Engines on wing */}
                 <ellipse cx="215" cy="215" rx="22" ry="8" />
                 <ellipse cx="272" cy="193" rx="20" ry="7" />
-                {/* Tail vertical stabilizer */}
                 <path d="M 70 130 L 50 70 L 95 70 L 110 125" />
-                {/* Horizontal stabilizer */}
                 <path d="M 55 150 L 8 170 L 65 172 Z" />
-                {/* Windows row */}
                 <line x1="150" y1="150" x2="520" y2="150" strokeDasharray="3 6" opacity="0.4" />
                 <line x1="150" y1="105" x2="380" y2="105" strokeDasharray="3 6" opacity="0.4" />
               </svg>
             </motion.div>
           </div>
 
-          {/* Right — text */}
           <motion.div
             className="md:col-span-2 flex flex-col justify-center"
             initial={{ opacity: 0, y: 30 }}
@@ -319,9 +305,7 @@ export default function Home() {
             >
               A380
             </h2>
-            <p className="font-serif italic text-phi-white/90 text-xl mb-6">
-              Le superjumbo d'Airbus
-            </p>
+            <p className="font-serif italic text-phi-white/90 text-xl mb-6">Le superjumbo d'Airbus</p>
             <p className="font-body text-phi-grey leading-relaxed mb-10 max-w-md">
               Plus grand avion commercial jamais construit, l'A380 affirme le pari de la
               démesure : deux ponts complets, quatre réacteurs, une silhouette qui impose
@@ -334,13 +318,8 @@ export default function Home() {
                 { label: 'Passagers max', value: '853' },
                 { label: 'Portée', value: '15 200 km' },
               ].map((spec) => (
-                <li
-                  key={spec.label}
-                  className="flex items-baseline justify-between py-4 border-b border-phi-sky/20"
-                >
-                  <span className="font-mono text-xs uppercase tracking-widest text-phi-grey">
-                    {spec.label}
-                  </span>
+                <li key={spec.label} className="flex items-baseline justify-between py-4 border-b border-phi-sky/20">
+                  <span className="font-mono text-xs uppercase tracking-widest text-phi-grey">{spec.label}</span>
                   <span className="font-mono text-phi-white text-2xl">{spec.value}</span>
                 </li>
               ))}
@@ -355,18 +334,15 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Animated divider below section */}
         <div className="mt-32 px-[6vw]">
           <ScrollDrawLine />
         </div>
       </section>
 
-      {/* ============ SECTION 3 — CATÉGORIES ============ */}
+      {/* ============ SECTION 4 — CATÉGORIES ============ */}
       <section className="relative bg-phi-slate py-32 px-[6vw]">
         <div className="mb-16">
-          <span className="font-mono text-xs uppercase tracking-widest text-phi-sky">
-            03 · CATÉGORIES
-          </span>
+          <span className="font-mono text-xs uppercase tracking-widest text-phi-sky">03 · CATÉGORIES</span>
           <h2
             className="font-display text-phi-white mt-3"
             style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: 0.95, letterSpacing: '-0.02em' }}
@@ -381,23 +357,13 @@ export default function Home() {
             return (
               <motion.article
                 key={cat.num}
-                className={`relative overflow-hidden bg-[rgba(255,255,255,0.04)] backdrop-blur-md border border-[rgba(0,163,224,0.15)] p-8 group transition-all duration-500 ${
-                  cat.offset ? 'h-64 md:-mt-6' : 'h-52'
-                }`}
+                className={`relative overflow-hidden bg-[rgba(255,255,255,0.04)] backdrop-blur-md border border-[rgba(0,163,224,0.15)] p-8 group transition-all duration-500 ${cat.offset ? 'h-64 md:-mt-6' : 'h-52'}`}
                 style={{ borderRadius: 0 }}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.8, ease: EASE, delay: i * 0.15 }}
-                whileHover={
-                  reduce
-                    ? undefined
-                    : {
-                        y: -10,
-                        boxShadow: '0 0 40px rgba(0,163,224,0.2)',
-                        borderColor: 'rgba(0,163,224,0.6)',
-                      }
-                }
+                whileHover={reduce ? undefined : { y: -10, boxShadow: '0 0 40px rgba(0,163,224,0.2)', borderColor: 'rgba(0,163,224,0.6)' }}
               >
                 <span
                   className="absolute top-4 right-4 font-mono text-phi-white/5 group-hover:text-phi-white/[0.15] transition-colors duration-500 pointer-events-none select-none"
@@ -408,16 +374,14 @@ export default function Home() {
                 </span>
                 <Icon size={32} strokeWidth={1.5} className="text-phi-sky mb-6" />
                 <h3 className="font-serif text-2xl text-phi-white mb-3">{cat.title}</h3>
-                <p className="font-body text-phi-grey text-sm leading-relaxed max-w-xs">
-                  {cat.desc}
-                </p>
+                <p className="font-body text-phi-grey text-sm leading-relaxed max-w-xs">{cat.desc}</p>
               </motion.article>
             );
           })}
         </div>
       </section>
 
-      {/* ============ SECTION 4 — CHIFFRE DU JOUR ============ */}
+      {/* ============ SECTION 5 — CHIFFRE DU JOUR ============ */}
       <section className="relative bg-phi-blue py-32 pl-[10vw] pr-[4vw] overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-end">
           <div className="md:col-span-4">
@@ -426,11 +390,7 @@ export default function Home() {
             </span>
             <h2
               className="font-display text-phi-white"
-              style={{
-                fontSize: 'clamp(5rem, 14vw, 14rem)',
-                letterSpacing: '-0.04em',
-                lineHeight: 0.9,
-              }}
+              style={{ fontSize: 'clamp(5rem, 14vw, 14rem)', letterSpacing: '-0.04em', lineHeight: 0.9 }}
             >
               <Counter target={37200} />
             </h2>
@@ -449,12 +409,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ SECTION 5 — HANGAR TEASER ============ */}
+      {/* ============ SECTION 6 — HANGAR TEASER ============ */}
       <section className="relative bg-phi-slate py-32 px-[6vw]">
         <div className="mb-16 max-w-4xl">
-          <span className="font-mono text-xs uppercase tracking-widest text-phi-sky">
-            05 · HANGAR
-          </span>
+          <span className="font-mono text-xs uppercase tracking-widest text-phi-sky">05 · HANGAR</span>
           <h2
             className="font-display text-phi-white mt-3"
             style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: 0.95, letterSpacing: '-0.02em' }}
@@ -485,12 +443,8 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-phi-slate/90 via-phi-slate/20 to-transparent" />
                 <div className="absolute inset-0 bg-phi-slate/0 group-hover:bg-phi-slate/40 transition-colors duration-500" />
                 <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                  <p className="font-display text-phi-white text-3xl leading-none tracking-tight">
-                    {a.nom}
-                  </p>
-                  <p className="font-mono text-xs uppercase tracking-widest text-phi-sky mt-2">
-                    {a.type}
-                  </p>
+                  <p className="font-display text-phi-white text-3xl leading-none tracking-tight">{a.nom}</p>
+                  <p className="font-mono text-xs uppercase tracking-widest text-phi-sky mt-2">{a.type}</p>
                 </div>
                 <span className="absolute top-4 left-4 font-mono text-[10px] uppercase tracking-widest text-phi-white/70">
                   0{i + 1}
