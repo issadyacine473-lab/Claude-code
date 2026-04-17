@@ -1,40 +1,42 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const NAV_LINKS: { label: string; to: string }[] = [
+const NAV_LINKS = [
   { label: 'Hangar', to: '/hangar' },
-  { label: 'Explorer', to: '/hangar' },
   { label: 'À propos', to: '/a-propos' },
 ];
 
-function PhiLogo() {
+function PhiMark() {
   return (
-    <Link to="/" className="flex items-baseline gap-2 select-none">
+    <Link
+      to="/"
+      aria-label="Φ Aéronautique — Accueil"
+      className="flex items-baseline gap-2 select-none group"
+    >
       <svg
-        width="34"
-        height="38"
-        viewBox="0 0 34 38"
+        width="20"
+        height="24"
+        viewBox="0 0 20 24"
         fill="none"
-        aria-label="Phi Aéronautique"
-        className="overflow-visible"
+        aria-hidden="true"
+        className="transition-opacity duration-200 group-hover:opacity-70"
       >
         <text
-          x="17"
-          y="30"
+          x="10"
+          y="20"
           textAnchor="middle"
           fontFamily="'Bebas Neue', sans-serif"
-          fontSize="34"
+          fontSize="22"
           fill="#F4F7FC"
-          style={{ letterSpacing: '0.02em' }}
         >
           Φ
         </text>
       </svg>
-      <span className="font-body text-[11px] uppercase tracking-[0.28em] text-phi-grey">
+      <span className="font-body text-[10px] uppercase tracking-[0.28em] text-phi-grey/80 hidden sm:block transition-colors duration-200 group-hover:text-phi-grey">
         Aéronautique
       </span>
     </Link>
@@ -45,14 +47,17 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const reduce = useReducedMotion();
+  const location = useLocation();
   const ticking = useRef(false);
+
+  useEffect(() => { setOpen(false); }, [location.pathname]);
 
   useEffect(() => {
     const onScroll = () => {
       if (ticking.current) return;
       ticking.current = true;
       requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 30);
+        setScrolled(window.scrollY > 50);
         ticking.current = false;
       });
     };
@@ -61,166 +66,184 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Lock scroll when mobile drawer is open
   useEffect(() => {
     if (open) {
-      const original = document.body.style.overflow;
+      const saved = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = original;
-      };
+      return () => { document.body.style.overflow = saved; };
     }
   }, [open]);
 
   return (
     <>
-      <motion.header
-        initial={reduce ? false : { opacity: 0, y: -20 }}
+      {/* ── Floating pill ────────────────────────────── */}
+      <motion.div
+        className="fixed z-50 left-1/2 -translate-x-1/2"
+        style={{ top: '16px' }}
+        initial={reduce ? false : { opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: EASE }}
-        className={[
-          'fixed top-0 left-0 right-0 z-40',
-          'transition-[background-color,backdrop-filter,border-color] duration-300',
-          scrolled
-            ? 'backdrop-blur-md bg-phi-slate/70 border-b border-phi-sky/20'
-            : 'bg-transparent border-b border-transparent',
-        ].join(' ')}
       >
-        <nav className="max-w-[1400px] mx-auto px-6 lg:px-10 h-[72px] flex items-center justify-between">
-          {/* Left: logo */}
-          <PhiLogo />
+        {/* Pill container */}
+        <div
+          className={[
+            'flex items-center gap-5 rounded-full transition-all duration-500',
+            'px-5 py-2.5',
+            scrolled
+              ? 'bg-[rgba(13,27,46,0.88)] backdrop-blur-2xl border border-[rgba(0,163,224,0.2)] shadow-[0_6px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)]'
+              : 'bg-[rgba(13,27,46,0.42)] backdrop-blur-xl  border border-[rgba(255,255,255,0.07)] shadow-[0_2px_20px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.04)]',
+          ].join(' ')}
+        >
+          <PhiMark />
 
-          {/* Center: nav links */}
-          <ul className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+          {/* Divider */}
+          <span className="w-px h-4 bg-white/10 hidden md:block" aria-hidden="true" />
+
+          {/* Desktop links */}
+          <nav className="hidden md:flex items-center gap-7" aria-label="Navigation principale">
             {NAV_LINKS.map((link) => (
-              <li key={link.label}>
-                <NavLink
-                  to={link.to}
-                  end={link.to === '/'}
-                  className={({ isActive }) =>
-                    [
-                      'font-body text-[12px] uppercase tracking-[0.22em] transition-colors duration-200',
-                      'relative pb-1',
-                      isActive ? 'text-phi-white' : 'text-phi-grey hover:text-phi-white',
-                    ].join(' ')
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      {link.label}
-                      <span
+              <NavLink
+                key={link.label}
+                to={link.to}
+                className={({ isActive }) =>
+                  [
+                    'relative font-body text-[11px] uppercase tracking-[0.22em] pb-0.5 transition-colors duration-200',
+                    isActive ? 'text-phi-white' : 'text-phi-grey hover:text-phi-white',
+                  ].join(' ')
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {link.label}
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-underline"
                         className="absolute left-0 right-0 -bottom-0.5 h-px bg-phi-sky"
-                        style={{
-                          transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
-                          transformOrigin: 'left',
-                          transition: 'transform 300ms cubic-bezier(0.22,1,0.36,1)',
-                        }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                       />
-                    </>
-                  )}
-                </NavLink>
-              </li>
+                    )}
+                  </>
+                )}
+              </NavLink>
             ))}
-          </ul>
+          </nav>
 
-          {/* Right: CTA */}
-          <div className="hidden md:block">
-            <Link
-              to="/hangar"
-              className="group inline-flex items-center gap-2 border border-phi-orange text-phi-orange hover:bg-phi-orange hover:text-phi-slate transition-colors duration-200 px-5 py-2 font-body text-[11px] uppercase tracking-[0.22em]"
-              style={{ borderRadius: 2 }}
-            >
-              Voir le Hangar
-              <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </Link>
-          </div>
+          {/* Divider */}
+          <span className="w-px h-4 bg-white/10 hidden md:block" aria-hidden="true" />
 
-          {/* Mobile hamburger */}
+          {/* CTA */}
+          <Link
+            to="/hangar"
+            className="hidden md:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-phi-orange border border-phi-orange/50 hover:bg-phi-orange hover:text-phi-slate transition-all duration-200 px-4 py-1.5"
+            style={{ borderRadius: 2 }}
+          >
+            Hangar
+            <span aria-hidden="true">→</span>
+          </Link>
+
+          {/* Mobile toggle */}
           <button
-            onClick={() => setOpen(true)}
-            aria-label="Ouvrir le menu"
-            className="md:hidden text-phi-white p-2"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-expanded={open}
+            className="md:hidden flex items-center justify-center text-phi-white p-1"
           >
-            <Menu size={22} />
-          </button>
-        </nav>
-      </motion.header>
-
-      {/* Mobile drawer */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            key="drawer"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 md:hidden"
-          >
-            {/* Backdrop */}
-            <motion.div
-              className="absolute inset-0 bg-phi-slate/60 backdrop-blur-sm"
-              onClick={() => setOpen(false)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
-
-            {/* Panel */}
-            <motion.aside
-              initial={reduce ? { x: 0 } : { x: '100%' }}
-              animate={{ x: 0 }}
-              exit={reduce ? { x: 0 } : { x: '100%' }}
-              transition={{ duration: 0.45, ease: EASE }}
-              className="absolute top-0 right-0 h-full w-[82%] max-w-[380px] bg-phi-slate border-l border-phi-sky/20 flex flex-col"
-            >
-              <div className="h-[72px] px-6 flex items-center justify-between border-b border-phi-sky/15">
-                <PhiLogo />
-                <button
-                  onClick={() => setOpen(false)}
-                  aria-label="Fermer le menu"
-                  className="text-phi-white p-2"
+            <AnimatePresence mode="wait" initial={false}>
+              {open ? (
+                <motion.span
+                  key="close"
+                  initial={{ rotate: -45, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 45, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <X size={22} />
-                </button>
-              </div>
+                  <X size={17} strokeWidth={1.5} />
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="open"
+                  initial={{ rotate: 45, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -45, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Menu size={17} strokeWidth={1.5} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
 
-              <ul className="flex-1 flex flex-col gap-6 px-8 py-12">
+        {/* Mobile dropdown */}
+        <AnimatePresence>
+          {open && (
+            <motion.nav
+              key="mobile-menu"
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scaleY: 0.9 }}
+              animate={{ opacity: 1, y: 0, scaleY: 1 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scaleY: 0.9 }}
+              transition={{ duration: 0.25, ease: EASE }}
+              style={{ transformOrigin: 'top center' }}
+              className="mt-2 rounded-2xl overflow-hidden bg-[rgba(13,27,46,0.94)] backdrop-blur-2xl border border-[rgba(0,163,224,0.18)] shadow-[0_12px_48px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)] min-w-[220px]"
+              aria-label="Menu mobile"
+            >
+              <ul>
                 {NAV_LINKS.map((link, i) => (
                   <motion.li
                     key={link.label}
-                    initial={reduce ? false : { opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.08 + i * 0.06, duration: 0.4, ease: EASE }}
+                    initial={reduce ? false : { opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 + i * 0.05, duration: 0.28, ease: EASE }}
+                    className="border-b border-white/[0.05] last:border-none"
                   >
                     <NavLink
                       to={link.to}
-                      onClick={() => setOpen(false)}
                       className={({ isActive }) =>
                         [
-                          'font-display text-4xl tracking-wide block',
-                          isActive ? 'text-phi-white' : 'text-phi-grey',
+                          'flex items-center justify-between px-7 py-4 font-display text-[1.75rem] tracking-wide transition-colors duration-200',
+                          isActive ? 'text-phi-white' : 'text-phi-grey hover:text-phi-white',
                         ].join(' ')
                       }
                     >
-                      {link.label}
+                      {({ isActive }) => (
+                        <>
+                          {link.label}
+                          {isActive && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-phi-sky" aria-hidden="true" />
+                          )}
+                        </>
+                      )}
                     </NavLink>
                   </motion.li>
                 ))}
               </ul>
-
-              <div className="px-8 pb-10">
+              <div className="px-7 py-5 border-t border-white/[0.05]">
                 <Link
                   to="/hangar"
-                  onClick={() => setOpen(false)}
-                  className="inline-flex items-center gap-2 border border-phi-orange text-phi-orange px-5 py-3 font-body text-[12px] uppercase tracking-[0.22em]"
+                  className="inline-flex items-center gap-2 border border-phi-orange/60 text-phi-orange px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] hover:bg-phi-orange hover:text-phi-slate transition-all duration-200"
                   style={{ borderRadius: 2 }}
                 >
                   Voir le Hangar →
                 </Link>
               </div>
-            </motion.aside>
-          </motion.div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Backdrop tap-to-close on mobile */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="backdrop"
+            className="fixed inset-0 z-40 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
         )}
       </AnimatePresence>
     </>
