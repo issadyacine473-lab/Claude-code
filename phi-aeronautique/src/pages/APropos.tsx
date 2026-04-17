@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import ShaderAnimation from '../components/ShaderAnimation';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -28,24 +29,43 @@ export default function APropos() {
     <>
       <Navbar />
 
-      {/* ============ HEADER ============ */}
-      <section className="pt-32 px-8">
+      {/* ============ HEADER — shader background ============ */}
+      <section className="relative pt-36 px-8 pb-24 overflow-hidden min-h-[60vh] flex flex-col justify-end">
+        {/* WebGL shader layer */}
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <ShaderAnimation />
+        </div>
+
+        {/* Gradient fade: transparent top → phi-slate bottom */}
+        <div
+          className="absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(13,27,46,0.25) 0%, rgba(13,27,46,0.5) 50%, rgba(13,27,46,0.92) 100%)',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Horizontal scan accent */}
+        <div
+          className="absolute left-0 right-0 z-[2] h-px pointer-events-none"
+          style={{ top: '35%', background: 'linear-gradient(to right, transparent, rgba(0,163,224,0.35), transparent)' }}
+          aria-hidden="true"
+        />
+
+        {/* Content */}
         <motion.div
           initial={initial}
           animate={animate}
           transition={{ duration: 0.9, ease: EASE }}
-          className="max-w-6xl"
+          className="max-w-6xl relative z-10"
         >
           <span className="font-mono text-xs uppercase tracking-widest text-phi-sky">
             À PROPOS · MANIFESTE
           </span>
           <h1
             className="font-display text-phi-white mt-4"
-            style={{
-              fontSize: 'clamp(4rem, 12vw, 12rem)',
-              lineHeight: 0.9,
-              letterSpacing: '-0.02em',
-            }}
+            style={{ fontSize: 'clamp(4rem, 12vw, 12rem)', lineHeight: 0.9, letterSpacing: '-0.02em' }}
           >
             Φ Aéronautique
           </h1>
@@ -56,9 +76,9 @@ export default function APropos() {
       </section>
 
       {/* ============ BODY — 2 COLUMNS ============ */}
-      <section className="px-8 py-24">
+      <section className="px-8 py-24 bg-phi-slate">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20">
-          {/* Left — manifesto, font-mono small */}
+          {/* Left — manifesto */}
           <motion.aside
             className="md:col-span-4 md:col-start-1"
             initial={initial}
@@ -86,7 +106,7 @@ export default function APropos() {
             </div>
           </motion.aside>
 
-          {/* Right — 3 large paragraphs, font-body */}
+          {/* Right — 3 large paragraphs */}
           <motion.div
             className="md:col-span-7 md:col-start-6"
             initial={initial}
@@ -111,11 +131,10 @@ export default function APropos() {
                 mémoire et performance.
               </p>
               <p>
-                Nous avons volontairement écarté le WebGL et la 3D temps réel.
-                La 2D travaillée — silhouettes vectorielles, images éditoriales,
-                typographie — génère une illusion de profondeur plus fidèle à
-                l'expérience du papier. Moins de pixels, plus de regard. Moins
-                de technologie exposée, plus d'attention portée à la ligne.
+                La typographie éditoriale reste le cœur du projet. Les silhouettes
+                vectorielles, les images cinématiques, et le fond shader qui anime
+                cette page sont convoqués en appui — jamais en écrasement. Moins de
+                pixels dominants, plus d'attention portée à la ligne.
               </p>
             </div>
           </motion.div>
@@ -123,7 +142,7 @@ export default function APropos() {
       </section>
 
       {/* ============ VALUES ============ */}
-      <section className="px-8 pb-32">
+      <section className="px-8 pb-32 bg-phi-slate">
         <motion.div
           initial={initial}
           whileInView={animate}
@@ -145,11 +164,7 @@ export default function APropos() {
               >
                 <h3
                   className="font-display text-phi-white mb-4"
-                  style={{
-                    fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                    lineHeight: 0.95,
-                    letterSpacing: '-0.02em',
-                  }}
+                  style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', lineHeight: 0.95, letterSpacing: '-0.02em' }}
                 >
                   {v.titre}
                 </h3>
