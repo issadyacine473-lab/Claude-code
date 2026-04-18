@@ -10,6 +10,7 @@ export default {
         'phi-white': '#F4F7FC',
         'phi-grey': '#8A9BB5',
         'phi-slate': '#0D1B2E',
+        'phi-deep': '#060C14',
         'phi-orange': '#FF6B1A',
       },
       fontFamily: {
