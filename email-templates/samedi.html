@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#fdf2f8;font-family:'Segoe UI',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#fdf2f8;padding:30px 0;">
+  <tr><td align="center">
+  <table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;">
+
+    <!-- HEADER pastel -->
+    <tr><td style="background:linear-gradient(135deg,#9f1239 0%,#be123c 50%,#e11d48 100%);border-radius:16px 16px 0 0;padding:36px 40px 28px;text-align:center;">
+      <p style="margin:0 0 6px;font-size:11px;color:#fecdd3;letter-spacing:4px;text-transform:uppercase;font-weight:600;">Samedi · Temps libre</p>
+      <h1 style="margin:0;font-size:28px;color:#ffffff;font-weight:700;">Résumé email du jour</h1>
+      <p style="margin:10px 0 0;font-size:14px;color:#fecdd3;">{{DATE}}</p>
+      <div style="margin:18px auto 0;display:inline-block;background:rgba(255,255,255,0.15);border-radius:8px;padding:6px 18px;">
+        <p style="margin:0;font-size:12px;color:#fff1f2;">📬 Bonne journée, Yacine !</p>
+      </div>
+    </td></tr>
+
+    <!-- STATS — style carte légère -->
+    <tr><td style="background:#ffffff;padding:24px 40px;border-left:1px solid #fce7f3;border-right:1px solid #fce7f3;box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="center" style="width:33%;padding:0 6px;">
+            <div style="background:#fdf2f8;border-radius:12px;padding:16px 10px;">
+              <p style="margin:0;font-size:34px;font-weight:700;color:#9f1239;">{{TOTAL}}</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#be185d;">reçus</p>
+            </div>
+          </td>
+          <td align="center" style="width:33%;padding:0 6px;">
+            <div style="background:#f0fdf4;border-radius:12px;padding:16px 10px;">
+              <p style="margin:0;font-size:34px;font-weight:700;color:#15803d;">{{CONSERVES}}</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#4ade80;">conservés</p>
+            </div>
+          </td>
+          <td align="center" style="width:33%;padding:0 6px;">
+            <div style="background:#fef2f2;border-radius:12px;padding:16px 10px;">
+              <p style="margin:0;font-size:34px;font-weight:700;color:#dc2626;">{{SUPPRIMES}}</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#f87171;">traités</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    {{ALERT_BLOCK}}
+
+    <tr><td style="background:#ffffff;padding:18px 40px 8px;border-left:1px solid #fce7f3;border-right:1px solid #fce7f3;">
+      <p style="margin:0;font-size:10px;color:#e11d48;text-transform:uppercase;letter-spacing:3px;font-weight:700;border-bottom:2px solid #fce7f3;padding-bottom:10px;">Emails importants</p>
+    </td></tr>
+
+    {{EMAIL_ITEMS}}
+
+    <tr><td style="background:#ffffff;padding:18px 40px 8px;border-left:1px solid #fce7f3;border-right:1px solid #fce7f3;">
+      <p style="margin:0;font-size:10px;color:#fba4b4;text-transform:uppercase;letter-spacing:3px;font-weight:700;border-bottom:1px solid #fdf2f8;padding-bottom:10px;">Archivés / Supprimés — {{NB_ARCHIVES}} emails</p>
+    </td></tr>
+    {{ARCHIVE_TABLE}}
+
+    <tr><td style="background:linear-gradient(135deg,#9f1239,#be123c);border-radius:0 0 16px 16px;padding:22px 40px;text-align:center;">
+      <p style="margin:0 0 3px;font-size:12px;color:#fecdd3;">Assistant Email · Claude AI · Yacine Issad</p>
+      <p style="margin:0;font-size:11px;color:#9f1239;">{{DATE}} · 17h00</p>
+    </td></tr>
+
+  </table>
+  </td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#011a12;font-family:'Segoe UI',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#011a12;padding:30px 0;">
+  <tr><td align="center">
+  <table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;">
+
+    <!-- HEADER -->
+    <tr><td style="background:linear-gradient(160deg,#052e16 0%,#064e3b 60%,#065f46 100%);border-radius:16px 16px 0 0;padding:36px 40px 30px;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="vertical-align:middle;">
+            <p style="margin:0 0 6px;font-size:11px;color:#6ee7b7;letter-spacing:3px;text-transform:uppercase;font-weight:600;">Mercredi · Mi-semaine</p>
+            <h1 style="margin:0;font-size:26px;color:#ffffff;font-weight:700;line-height:1.3;">Résumé de ta boîte</h1>
+            <p style="margin:8px 0 0;font-size:14px;color:#a7f3d0;">{{DATE}}</p>
+          </td>
+          <td style="text-align:right;vertical-align:middle;width:80px;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:inline-block;line-height:64px;text-align:center;font-size:28px;">📬</div>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- STATS - barre horizontale -->
+    <tr><td style="background:#022c22;padding:20px 40px;border-left:1px solid #052e16;border-right:1px solid #052e16;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="width:33%;text-align:center;padding:12px 8px;border-right:1px solid #052e16;">
+            <p style="margin:0;font-size:30px;font-weight:700;color:#34d399;">{{TOTAL}}</p>
+            <p style="margin:3px 0 0;font-size:11px;color:#059669;">emails reçus</p>
+          </td>
+          <td style="width:33%;text-align:center;padding:12px 8px;border-right:1px solid #052e16;">
+            <p style="margin:0;font-size:30px;font-weight:700;color:#6ee7b7;">{{CONSERVES}}</p>
+            <p style="margin:3px 0 0;font-size:11px;color:#059669;">conservés</p>
+          </td>
+          <td style="width:33%;text-align:center;padding:12px 8px;">
+            <p style="margin:0;font-size:30px;font-weight:700;color:#f87171;">{{SUPPRIMES}}</p>
+            <p style="margin:3px 0 0;font-size:11px;color:#b91c1c;">archivés/supprimés</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    {{ALERT_BLOCK}}
+
+    <tr><td style="background:#022c22;padding:18px 40px 8px;border-left:1px solid #052e16;border-right:1px solid #052e16;">
+      <div style="display:flex;align-items:center;gap:10px;border-bottom:1px solid #052e16;padding-bottom:10px;">
+        <div style="width:3px;height:14px;background:#34d399;border-radius:2px;display:inline-block;"></div>
+        <p style="margin:0;display:inline;font-size:10px;color:#34d399;text-transform:uppercase;letter-spacing:3px;font-weight:700;">Emails importants</p>
+      </div>
+    </td></tr>
+
+    {{EMAIL_ITEMS}}
+
+    <tr><td style="background:#022c22;padding:18px 40px 8px;border-left:1px solid #052e16;border-right:1px solid #052e16;">
+      <div style="border-bottom:1px solid #011a12;padding-bottom:10px;">
+        <p style="margin:0;font-size:10px;color:#065f46;text-transform:uppercase;letter-spacing:3px;font-weight:700;">Archivés / Supprimés — {{NB_ARCHIVES}} emails</p>
+      </div>
+    </td></tr>
+    {{ARCHIVE_TABLE}}
+
+    <tr><td style="background:linear-gradient(135deg,#052e16,#064e3b);border-radius:0 0 16px 16px;padding:22px 40px;text-align:center;border-top:2px solid #34d399;">
+      <p style="margin:0 0 3px;font-size:12px;color:#6ee7b7;">Assistant Email · Claude AI · Yacine Issad</p>
+      <p style="margin:0;font-size:11px;color:#065f46;">{{DATE}} · 17h00</p>
+    </td></tr>
+
+  </table>
+  </td></tr>
+</table>
+</body>
+</html>

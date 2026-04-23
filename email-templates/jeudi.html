@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#1c0a00;font-family:'Segoe UI',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#1c0a00;padding:30px 0;">
+  <tr><td align="center">
+  <table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;">
+
+    <!-- HEADER avec bande latérale -->
+    <tr><td style="background:linear-gradient(135deg,#78350f 0%,#92400e 40%,#b45309 100%);border-radius:16px 16px 0 0;padding:0;overflow:hidden;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="width:6px;background:linear-gradient(180deg,#fbbf24,#f59e0b);"></td>
+          <td style="padding:32px 36px 28px;">
+            <p style="margin:0 0 6px;font-size:11px;color:#fde68a;letter-spacing:4px;text-transform:uppercase;font-weight:700;">Jeudi · Résumé quotidien</p>
+            <h1 style="margin:0;font-size:28px;color:#ffffff;font-weight:800;line-height:1.2;">Boîte mail <span style="color:#fcd34d;">de Yacine</span></h1>
+            <p style="margin:10px 0 0;font-size:14px;color:#fed7aa;">{{DATE}}</p>
+          </td>
+          <td style="padding:20px;text-align:right;vertical-align:top;">
+            <p style="margin:0;font-size:42px;line-height:1;">⚡</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- STATS -->
+    <tr><td style="background:#2c1500;padding:22px 40px;border-left:1px solid #78350f;border-right:1px solid #78350f;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="center" style="width:33%;padding:0 6px;">
+            <div style="background:#1c0a00;border-radius:10px;padding:14px 10px;border-bottom:3px solid #f59e0b;">
+              <p style="margin:0;font-size:32px;font-weight:700;color:#fbbf24;">{{TOTAL}}</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#92400e;">reçus</p>
+            </div>
+          </td>
+          <td align="center" style="width:33%;padding:0 6px;">
+            <div style="background:#1c0a00;border-radius:10px;padding:14px 10px;border-bottom:3px solid #34d399;">
+              <p style="margin:0;font-size:32px;font-weight:700;color:#34d399;">{{CONSERVES}}</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#059669;">conservés</p>
+            </div>
+          </td>
+          <td align="center" style="width:33%;padding:0 6px;">
+            <div style="background:#1c0a00;border-radius:10px;padding:14px 10px;border-bottom:3px solid #f87171;">
+              <p style="margin:0;font-size:32px;font-weight:700;color:#f87171;">{{SUPPRIMES}}</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#b91c1c;">traités</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    {{ALERT_BLOCK}}
+
+    <tr><td style="background:#2c1500;padding:18px 40px 8px;border-left:1px solid #78350f;border-right:1px solid #78350f;">
+      <p style="margin:0;font-size:10px;color:#f59e0b;text-transform:uppercase;letter-spacing:3px;font-weight:700;border-bottom:1px solid #78350f;padding-bottom:10px;">Emails importants</p>
+    </td></tr>
+
+    {{EMAIL_ITEMS}}
+
+    <tr><td style="background:#2c1500;padding:18px 40px 8px;border-left:1px solid #78350f;border-right:1px solid #78350f;">
+      <p style="margin:0;font-size:10px;color:#78350f;text-transform:uppercase;letter-spacing:3px;font-weight:700;border-bottom:1px solid #1c0a00;padding-bottom:10px;">Archivés / Supprimés — {{NB_ARCHIVES}} emails</p>
+    </td></tr>
+    {{ARCHIVE_TABLE}}
+
+    <tr><td style="background:linear-gradient(135deg,#78350f,#92400e);border-radius:0 0 16px 16px;padding:22px 40px;text-align:center;border-top:3px solid #fbbf24;">
+      <p style="margin:0 0 3px;font-size:12px;color:#fde68a;">Assistant Email · Claude AI · Yacine Issad</p>
+      <p style="margin:0;font-size:11px;color:#92400e;">{{DATE}} · 17h00</p>
+    </td></tr>
+
+  </table>
+  </td></tr>
+</table>
+</body>
+</html>
